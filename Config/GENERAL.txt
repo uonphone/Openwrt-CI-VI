@@ -1,23 +1,126 @@
+# ============================================================
+# 基础层 · LuCI 核心与管理界面
+# ============================================================
+CONFIG_PACKAGE_luci-base=y
+CONFIG_PACKAGE_luci-mod-admin-full=y
+CONFIG_PACKAGE_luci-app-firewall=y
+CONFIG_PACKAGE_luci-app-opkg=y
+CONFIG_PACKAGE_luci-i18n-base-zh-cn=y
+CONFIG_PACKAGE_luci-i18n-firewall-zh-cn=y
+
+# LuCI 兼容层（多个第三方插件的硬依赖）
+CONFIG_PACKAGE_luci-compat=y
+CONFIG_PACKAGE_luci-lua-runtime=y
+
+# ============================================================
+# 基础层 · 网络命令行工具
+# ============================================================
+CONFIG_PACKAGE_ip-full=y
+CONFIG_PACKAGE_curl=y
+CONFIG_PACKAGE_wget-ssl=y
+
+# ============================================================
+# 基础层 · 系统维护与文件操作
+# ============================================================
+CONFIG_PACKAGE_htop=y
+CONFIG_PACKAGE_nano=y
+CONFIG_PACKAGE_openssh-sftp-server=y
+CONFIG_PACKAGE_unzip=y
+CONFIG_PACKAGE_tar=y
+
+
+# ============================================================
+# AdGuard Home · DNS 过滤
+# 依赖：adguardhome (>=0.107.73-r3), luci-base
+# 注意：若同时启用 SmartDNS，需手动错开 53 端口
+# ============================================================
+CONFIG_PACKAGE_adguardhome=y
+CONFIG_PACKAGE_luci-app-adguardhome=y
+CONFIG_PACKAGE_luci-i18n-adguardhome-zh-cn=y
+
+# ============================================================
+# EasyTier · 去中心化组网
+# 依赖：easytier（核心）, kmod-tun, luci-compat
+# ============================================================
+CONFIG_PACKAGE_easytier=y
+CONFIG_PACKAGE_luci-app-easytier=y
+CONFIG_PACKAGE_kmod-tun=y
+CONFIG_PACKAGE_luci-compat=y   # 已在上方选中，此处仅作依赖提示
+
+# ============================================================
+# 集客 AC 控制器 (Gecoos AC)
+# 依赖：luci-lua-runtime；部分场景还需 kmod-vrf, kmod-bonding
+# 建议：构建时一并选中 kmod-vrf/kmod-bonding，避免启动后报缺
+# ============================================================
+CONFIG_PACKAGE_luci-app-gecoosac=y
+CONFIG_PACKAGE_luci-lua-runtime=y   # 已在上方选中，此处仅作依赖提示
+CONFIG_PACKAGE_kmod-vrf=y
+CONFIG_PACKAGE_kmod-bonding=y
+
+# ============================================================
+# HomeProxy · 代理平台
+# 依赖：sing-box, firewall4, kmod-nft-tproxy, ucode-mod-digest
+# 注意：firewall4 与 nftables 配套，确保未混用 iptables
+# ============================================================
+CONFIG_PACKAGE_luci-app-homeproxy=y
+CONFIG_PACKAGE_sing-box=y
+CONFIG_PACKAGE_firewall4=y
+CONFIG_PACKAGE_kmod-nft-tproxy=y
+CONFIG_PACKAGE_ucode-mod-digest=y
+
+# ============================================================
+# Lucky · DDNS / 端口转发 / 反向代理
+# 依赖：lucky（核心包，必须与 LuCI 包一同选中）
+# 注意：OpenWrt 自定义编译时必须同时勾选 lucky 和 luci-app-lucky
+# ============================================================
+CONFIG_PACKAGE_lucky=y
+CONFIG_PACKAGE_luci-app-lucky=y
+
+# ============================================================
+# OAF (OpenAppFilter) · 应用过滤
+# 依赖：kmod-oaf, appfilter, luci-app-oaf（三者缺一不可）
+# 注意：kmod-oaf 与内核版本强绑定，云编译时须保证内核版本匹配
+# ============================================================
+CONFIG_PACKAGE_luci-app-oaf=y
+CONFIG_PACKAGE_kmod-oaf=y
+CONFIG_PACKAGE_appfilter=y
+
+# ============================================================
+# SmartDNS · DNS 加速与防污染
+# 依赖：smartdns（核心）, luci-compat（或 luci-base）
+# 注意：与 AdGuard Home 同时运行时，避免抢占 53 端口
+# ============================================================
+CONFIG_PACKAGE_smartdns=y
+CONFIG_PACKAGE_luci-app-smartdns=y
+CONFIG_PACKAGE_luci-i18n-smartdns-zh-cn=y
+
+# ============================================================
+# WOL Ultra · 网络唤醒增强
+# 依赖：etherwake（基础唤醒工具），luci-base
+# 说明：wolultra 是增强版本，etherwake 为其底层依赖
+# ============================================================
+CONFIG_PACKAGE_luci-app-wolultra=y
+CONFIG_PACKAGE_etherwake=y
+
+# ============================================================
+# ZeroTier · SD-WAN 组网
+# 依赖：zerotier（核心）, kmod-tun, jsonfilter, ucode
+# 注意：kmod-tun 已在 EasyTier 区块选中，此处复用，无需重复
+# ============================================================
+CONFIG_PACKAGE_zerotier=y
+CONFIG_PACKAGE_luci-app-zerotier=y
+CONFIG_PACKAGE_jsonfilter=y
+
 #科学插件调整
 CONFIG_PACKAGE_luci-app-homeproxy=y
 #增加插件
 CONFIG_PACKAGE_luci-app-adguardhome=y
 CONFIG_PACKAGE_luci-app-autoreboot=y
-CONFIG_PACKAGE_luci-app-easytier=y
-CONFIG_PACKAGE_luci-app-gecoosac=y
-CONFIG_PACKAGE_luci-app-lucky=y
 #CONFIG_PACKAGE_luci-app-mini-diskmanager=y
 CONFIG_PACKAGE_luci-app-natmapt=y
-CONFIG_PACKAGE_luci-app-oaf=y
 CONFIG_PACKAGE_luci-app-partexp=y
-CONFIG_PACKAGE_luci-app-smartdns=y
 CONFIG_PACKAGE_luci-app-upnp=y
-CONFIG_PACKAGE_luci-app-wolultra=y
-CONFIG_PACKAGE_luci-app-zerotier=y
-#删除插件
-CONFIG_PACKAGE_luci-app-attendedsysupgrade=n
-CONFIG_PACKAGE_luci-app-samba4=n
-CONFIG_PACKAGE_luci-app-wol=n
+
 #参数调整
 CONFIG_CCACHE=y
 CONFIG_DEVEL=y
