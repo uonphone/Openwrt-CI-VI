@@ -1,124 +1,35 @@
-# ============================================================
-# 基础层 · LuCI 核心与管理界面
-# ============================================================
-CONFIG_PACKAGE_luci-base=y
-CONFIG_PACKAGE_luci-mod-admin-full=y
-CONFIG_PACKAGE_luci-app-firewall=y
-CONFIG_PACKAGE_luci-app-opkg=y
-CONFIG_PACKAGE_luci-i18n-base-zh-cn=y
-CONFIG_PACKAGE_luci-i18n-firewall-zh-cn=y
-
-# LuCI 兼容层（多个第三方插件的硬依赖）
-CONFIG_PACKAGE_luci-compat=y
-CONFIG_PACKAGE_luci-lua-runtime=y
-
-# ============================================================
-# 基础层 · 网络命令行工具
-# ============================================================
-CONFIG_PACKAGE_ip-full=y
-CONFIG_PACKAGE_curl=y
-CONFIG_PACKAGE_wget-ssl=y
-
-# ============================================================
-# 基础层 · 系统维护与文件操作
-# ============================================================
-CONFIG_PACKAGE_htop=y
-CONFIG_PACKAGE_nano=y
-CONFIG_PACKAGE_openssh-sftp-server=y
-CONFIG_PACKAGE_unzip=y
-CONFIG_PACKAGE_tar=y
-
-
-# ============================================================
-# AdGuard Home · DNS 过滤
-# 依赖：adguardhome (>=0.107.73-r3), luci-base
-# 注意：若同时启用 SmartDNS，需手动错开 53 端口
-# ============================================================
-CONFIG_PACKAGE_adguardhome=y
-CONFIG_PACKAGE_luci-app-adguardhome=y
-CONFIG_PACKAGE_luci-i18n-adguardhome-zh-cn=y
-
-# ============================================================
-# EasyTier · 去中心化组网
-# 依赖：easytier（核心）, kmod-tun, luci-compat
-# ============================================================
-CONFIG_PACKAGE_easytier=y
-CONFIG_PACKAGE_luci-app-easytier=y
-CONFIG_PACKAGE_kmod-tun=y
-#CONFIG_PACKAGE_luci-compat=y   # 已在上方选中，此处仅作依赖提示
-
-# ============================================================
-# 集客 AC 控制器 (Gecoos AC)
-# 依赖：luci-lua-runtime；部分场景还需 kmod-vrf, kmod-bonding
-# 建议：构建时一并选中 kmod-vrf/kmod-bonding，避免启动后报缺
-# ============================================================
-CONFIG_PACKAGE_luci-app-gecoosac=y
-#CONFIG_PACKAGE_luci-lua-runtime=y   # 已在上方选中，此处仅作依赖提示
-CONFIG_PACKAGE_kmod-vrf=y
-CONFIG_PACKAGE_kmod-bonding=y
-
-# ============================================================
-# HomeProxy · 代理平台
-# 依赖：sing-box, firewall4, kmod-nft-tproxy, ucode-mod-digest
-# 注意：firewall4 与 nftables 配套，确保未混用 iptables
-# ============================================================
+# ==========================================
+# 核心科学上网与 DNS (保留最核心组件)
+# ==========================================
 CONFIG_PACKAGE_luci-app-homeproxy=y
-CONFIG_PACKAGE_sing-box=y
-CONFIG_PACKAGE_firewall4=y
-CONFIG_PACKAGE_kmod-nft-tproxy=y
-CONFIG_PACKAGE_ucode-mod-digest=y
-
-# ============================================================
-# Lucky · DDNS / 端口转发 / 反向代理
-# 依赖：lucky（核心包，必须与 LuCI 包一同选中）
-# 注意：OpenWrt 自定义编译时必须同时勾选 lucky 和 luci-app-lucky
-# ============================================================
-CONFIG_PACKAGE_lucky=y
-CONFIG_PACKAGE_luci-app-lucky=y
-
-# ============================================================
-# OAF (OpenAppFilter) · 应用过滤
-# 依赖：kmod-oaf, appfilter, luci-app-oaf（三者缺一不可）
-# 注意：kmod-oaf 与内核版本强绑定，云编译时须保证内核版本匹配
-# ============================================================
-CONFIG_PACKAGE_luci-app-oaf=y
-CONFIG_PACKAGE_oaf=y
-CONFIG_PACKAGE_open-app-filter=y
-
-# ============================================================
-# SmartDNS · DNS 加速与防污染
-# 依赖：smartdns（核心）, luci-compat（或 luci-base）
-# 注意：与 AdGuard Home 同时运行时，避免抢占 53 端口
-# ============================================================
-CONFIG_PACKAGE_smartdns=y
 CONFIG_PACKAGE_luci-app-smartdns=y
 CONFIG_PACKAGE_luci-i18n-smartdns-zh-cn=y
 
-# ============================================================
-# WOL Ultra · 网络唤醒增强
-# 依赖：etherwake（基础唤醒工具），luci-base
-# 说明：wolultra 是增强版本，etherwake 为其底层依赖
-# ============================================================
-CONFIG_PACKAGE_luci-app-wolultra=y
-CONFIG_PACKAGE_etherwake=y
+# ==========================================
+# 基础网络与远程访问 (保留实用工具)
+# ==========================================
+CONFIG_PACKAGE_luci-app-lucky=y        # 保留Lucky，替代多个穿透/DDNS插件
+CONFIG_PACKAGE_luci-app-upnp=y         # 基础端口映射
+CONFIG_PACKAGE_luci-app-autoreboot=y   # 定时重启保活
+CONFIG_PACKAGE_luci-app-wolultra=y     # 网络唤醒
 
-# ============================================================
-# ZeroTier · SD-WAN 组网
-# 依赖：zerotier（核心）, kmod-tun, jsonfilter, ucode
-# 注意：kmod-tun 已在 EasyTier 区块选中，此处复用，无需重复
-# ============================================================
-CONFIG_PACKAGE_zerotier=y
-CONFIG_PACKAGE_luci-app-zerotier=y
-CONFIG_PACKAGE_jsonfilter=y
+# ==========================================
+# 删除的冗余/高耗能插件
+# ==========================================
+# CONFIG_PACKAGE_luci-app-adguardhome is not set  # 剔除重型DNS
+# CONFIG_PACKAGE_luci-app-oaf is not set          # 剔除高耗能行为管理
+# CONFIG_PACKAGE_luci-app-easytier is not set     # 剔除组网工具
+# CONFIG_PACKAGE_luci-app-natmapt is not set      # 剔除冗余穿透工具
+# CONFIG_PACKAGE_luci-app-gecoosac is not set     # 剔除边缘工具
+# CONFIG_PACKAGE_luci-app-mini-diskmanager is not set # 剔除复杂磁盘管理
+# CONFIG_PACKAGE_luci-app-partexp is not set      # 剔除分区扩容
+# CONFIG_PACKAGE_luci-app-attendedsysupgrade is not set
+# CONFIG_PACKAGE_luci-app-samba4 is not set
+# CONFIG_PACKAGE_luci-app-wol is not set
 
-#增加插件
-#CONFIG_PACKAGE_luci-app-autoreboot=y
-#CONFIG_PACKAGE_luci-app-mini-diskmanager=y
-CONFIG_PACKAGE_luci-app-natmapt=y
-#CONFIG_PACKAGE_luci-app-partexp=y
-CONFIG_PACKAGE_luci-app-upnp=y
-
-#参数调整
+# ==========================================
+# 参数调整 (保持编译效率)
+# ==========================================
 CONFIG_CCACHE=y
 CONFIG_DEVEL=y
 CONFIG_FEED_video=n
@@ -127,106 +38,41 @@ CONFIG_FEED_pon_userspace=n
 CONFIG_TARGET_MULTI_PROFILE=y
 CONFIG_TARGET_PER_DEVICE_ROOTFS=y
 CONFIG_TARGET_ROOTFS_INITRAMFS=n
-#内核调整
-#CONFIG_PACKAGE_kmod-ata-ahci=y
-#CONFIG_PACKAGE_kmod-ata-core=y
-#CONFIG_PACKAGE_kmod-bonding=y
-#CONFIG_PACKAGE_kmod-dsa=y
-#CONFIG_PACKAGE_kmod-dummy=y
-#CONFIG_PACKAGE_kmod-fs-btrfs=y
-#CONFIG_PACKAGE_kmod-fs-ksmbd=y
-#CONFIG_PACKAGE_kmod-fuse=y
-#CONFIG_PACKAGE_kmod-inet-diag=y
-#CONFIG_PACKAGE_kmod-inet-mptcp-diag=y
-#CONFIG_PACKAGE_kmod-mtd-rw=y
-#CONFIG_PACKAGE_kmod-netlink-diag=y
-#CONFIG_PACKAGE_kmod-nf-nat=y
-#CONFIG_PACKAGE_kmod-nf-nat6=y
-#CONFIG_PACKAGE_kmod-nft-arp=y
-#CONFIG_PACKAGE_kmod-nft-bridge=y
-#CONFIG_PACKAGE_kmod-nft-connlimit=y
-#CONFIG_PACKAGE_kmod-nft-core=y
-#CONFIG_PACKAGE_kmod-nft-dup-inet=y
-#CONFIG_PACKAGE_kmod-nft-fib=y
-#CONFIG_PACKAGE_kmod-nft-nat=y
-#CONFIG_PACKAGE_kmod-nft-netdev=y
-#CONFIG_PACKAGE_kmod-nft-offload=y
-#CONFIG_PACKAGE_kmod-nft-queue=y
-#CONFIG_PACKAGE_kmod-nft-socket=y
-#CONFIG_PACKAGE_kmod-nft-tproxy=y
-#CONFIG_PACKAGE_kmod-nft-xfrm=y
-#CONFIG_PACKAGE_kmod-nvme=y
-#CONFIG_PACKAGE_kmod-ovpn-backports=y
-#CONFIG_PACKAGE_kmod-sound-core=y
-#CONFIG_PACKAGE_kmod-usb3=y
-#CONFIG_PACKAGE_kmod-usb-audio=y
-#CONFIG_PACKAGE_kmod-usb-core=y
-#CONFIG_PACKAGE_kmod-usb-dwc3=y
-#CONFIG_PACKAGE_kmod-usb-ehci=y
-#CONFIG_PACKAGE_kmod-usb-net=y
-#CONFIG_PACKAGE_kmod-usb-net-asix=y
-#CONFIG_PACKAGE_kmod-usb-net-asix-ax88179=y
-#CONFIG_PACKAGE_kmod-usb-net-cdc-eem=y
-#CONFIG_PACKAGE_kmod-usb-net-cdc-ether=y
-#CONFIG_PACKAGE_kmod-usb-net-cdc-mbim=y
-#CONFIG_PACKAGE_kmod-usb-net-cdc-ncm=y
-#CONFIG_PACKAGE_kmod-usb-net-cdc-subset=y
-#CONFIG_PACKAGE_kmod-usb-net-huawei-cdc-ncm=y
-#CONFIG_PACKAGE_kmod-usb-net-ipheth=y
-#CONFIG_PACKAGE_kmod-usb-net-rndis=y
-#CONFIG_PACKAGE_kmod-usb-net-rtl8150=y
-#CONFIG_PACKAGE_kmod-usb-net-rtl8152=y
-#CONFIG_PACKAGE_kmod-usb-net-sierrawireless=y
-#CONFIG_PACKAGE_kmod-usb-ohci=y
-#CONFIG_PACKAGE_kmod-usb-storage=y
-#CONFIG_PACKAGE_kmod-usb-storage-extras=y
-#CONFIG_PACKAGE_kmod-usb-storage-uas=y
-#CONFIG_PACKAGE_kmod-usb-uhci=y
-#CONFIG_PACKAGE_kmod-veth=y
-#CONFIG_PACKAGE_kmod-wireguard=y
-#组件调整
-#CONFIG_PACKAGE_autocore=y
-#CONFIG_PACKAGE_automount=y
-#CONFIG_PACKAGE_blkid=y
-#CONFIG_PACKAGE_cfdisk=y
-#CONFIG_PACKAGE_cgdisk=y
-#CONFIG_PACKAGE_coremark=y
-#CONFIG_PACKAGE_cpufreq=y
-#CONFIG_PACKAGE_dmesg=y
-#CONFIG_PACKAGE_exfat-fsck=y
-#CONFIG_PACKAGE_exfat-mkfs=y
-#CONFIG_PACKAGE_fdisk=y
-#CONFIG_PACKAGE_fullconenat-sonic=y
-#CONFIG_PACKAGE_gdisk=y
-#CONFIG_PACKAGE_htop=y
-#CONFIG_PACKAGE_iperf3=y
-#CONFIG_PACKAGE_libimobiledevice=y
-#CONFIG_PACKAGE_libstdcpp=y
-#CONFIG_PACKAGE_libpthread=y
-#CONFIG_PACKAGE_libminiupnpc=y
-#CONFIG_PACKAGE_libnatpmp=y
-#CONFIG_PACKAGE_libatomic=y
-#CONFIG_PACKAGE_libnvme=y
-#CONFIG_PACKAGE_lsblk=y
-#CONFIG_PACKAGE_luci-base=y
-#CONFIG_PACKAGE_luci-lib-base=y
-#CONFIG_PACKAGE_luci-lib-ipkg=y
-#CONFIG_PACKAGE_luci-proto-relay=y
-#CONFIG_PACKAGE_miniupnpd=y
-#CONFIG_PACKAGE_mmc-utils=y
-#CONFIG_PACKAGE_nand-utils=y
-#CONFIG_PACKAGE_nftables=y
-#CONFIG_PACKAGE_nvme-cli=y
-#CONFIG_PACKAGE_openssh-keygen=y
-#CONFIG_PACKAGE_openssh-sftp-server=y
-#CONFIG_PACKAGE_openssl-util=y
-#CONFIG_PACKAGE_proto-bonding=y
-#CONFIG_PACKAGE_sfdisk=y
-#CONFIG_PACKAGE_sgdisk=y
-#CONFIG_PACKAGE_smartmontools=y
-#CONFIG_PACKAGE_smartmontools-drivedb=y
-#CONFIG_PACKAGE_stuntman-client=y
-#CONFIG_PACKAGE_usb-modeswitch=y
-#CONFIG_PACKAGE_usbmuxd=y
-#CONFIG_PACKAGE_usbutils=y
-#CONFIG_PACKAGE_xz-utils=y
+
+# ==========================================
+# 内核调整 (仅保留核心与常用驱动)
+# ==========================================
+# 基础网络与防火墙
+CONFIG_PACKAGE_kmod-nft-core=y
+CONFIG_PACKAGE_kmod-nft-offload=y
+CONFIG_PACKAGE_kmod-nft-tproxy=y
+CONFIG_PACKAGE_kmod-wireguard=y
+CONFIG_PACKAGE_kmod-tun=y
+CONFIG_PACKAGE_kmod-veth=y
+CONFIG_PACKAGE_kmod-nf-nat=y
+CONFIG_PACKAGE_kmod-nf-nat6=y
+
+# 存储与USB (仅保留基础存储支持，剔除声卡/冷门网卡)
+CONFIG_PACKAGE_kmod-usb-core=y
+CONFIG_PACKAGE_kmod-usb3=y
+CONFIG_PACKAGE_kmod-usb-storage=y
+CONFIG_PACKAGE_kmod-usb-storage-uas=y
+CONFIG_PACKAGE_kmod-fs-btrfs=y
+CONFIG_PACKAGE_kmod-fs-ksmbd=y
+CONFIG_PACKAGE_kmod-fuse=y
+CONFIG_PACKAGE_kmod-nvme=y
+# 剔除了大量 kmod-usb-net-*, kmod-usb-audio, kmod-sound-core 等
+
+# ==========================================
+# 组件调整 (基础依赖与轻量工具)
+# ==========================================
+CONFIG_PACKAGE_luci-base=y
+CONFIG_PACKAGE_luci-compat=y
+CONFIG_PACKAGE_curl=y
+CONFIG_PACKAGE_ip-full=y
+CONFIG_PACKAGE_iperf3=y
+CONFIG_PACKAGE_htop=y
+CONFIG_PACKAGE_openssl-util=y
+CONFIG_PACKAGE_smartmontools=y
+CONFIG_PACKAGE_usbutils=y
+# 剔除了 adguardhome, appfilter, 大量分区工具(cfdisk/gdisk/sfdisk等), 音频相关组件
